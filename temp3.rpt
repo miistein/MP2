@@ -1,0 +1,13 @@
+****************************************
+Report : constraint
+	-all_violators
+	-path slack_only
+	-max_delay
+Design : usb_phy
+Version: K-2015.06-SP3-1
+Date   : Sun Mar 10 20:18:36 2019
+****************************************
+
+This design has no constraints of the specified types.
+
+1

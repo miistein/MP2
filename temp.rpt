@@ -1,0 +1,36 @@
+****************************************
+Report : bottleneck
+	-cost_type path_count
+	-from ...
+	-max_cells 20
+	-nworst_paths 100
+Design : usb_phy
+Version: K-2015.06-SP3-1
+Date   : Sun Mar 10 20:18:43 2019
+****************************************
+
+Bottleneck Cost = Number of violating paths through cell
+
+                                                 Bottleneck
+Cell                              Reference      Cost
+--------------------------------------------------------------------------------
+i_rx_phy_rxdn_s1_reg              ff00m02        3.000000
+U454                              na02f03        3.000000
+U504                              oa21s01        3.000000
+U476                              oa21f01        3.000000
+U329                              na02f01        2.000000
+i_rx_phy_rxdp_s1_reg              ff00f02        1.000000
+U375                              na02f01        1.000000
+U638                              in01m02        1.000000
+U480                              na03f03        1.000000
+U581                              na02s03        1.000000
+U603                              na02s02        1.000000
+usb_rst_reg                       ff00m02        1.000000
+U588                              in01f03        1.000000
+U675                              in01s01        1.000000
+U571                              ao21s03        1.000000
+U503                              in01f01        1.000000
+U404                              oa22f01        1.000000
+U455                              oa22f02        1.000000
+
+1
