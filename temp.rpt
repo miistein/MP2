@@ -1,12 +1,15 @@
+Information: Using automatic max wire load selection group 'WireAreaForZero'. (ENV-003)
+Information: Using automatic min wire load selection group 'WireAreaForZero'. (ENV-003)
 ****************************************
 Report : bottleneck
 	-cost_type path_count
 	-from ...
-	-max_cells 20
+	-max_cells 17261
+	-max_paths 10000
 	-nworst_paths 100
 Design : usb_phy
 Version: K-2015.06-SP3-1
-Date   : Sun Mar 10 20:18:43 2019
+Date   : Thu Mar 14 00:52:44 2019
 ****************************************
 
 Bottleneck Cost = Number of violating paths through cell
@@ -14,23 +17,51 @@ Bottleneck Cost = Number of violating paths through cell
                                                  Bottleneck
 Cell                              Reference      Cost
 --------------------------------------------------------------------------------
-i_rx_phy_rxdn_s1_reg              ff00m02        3.000000
-U454                              na02f03        3.000000
-U504                              oa21s01        3.000000
-U476                              oa21f01        3.000000
-U329                              na02f01        2.000000
-i_rx_phy_rxdp_s1_reg              ff00f02        1.000000
-U375                              na02f01        1.000000
-U638                              in01m02        1.000000
-U480                              na03f03        1.000000
-U581                              na02s03        1.000000
-U603                              na02s02        1.000000
-usb_rst_reg                       ff00m02        1.000000
-U588                              in01f03        1.000000
-U675                              in01s01        1.000000
-U571                              ao21s03        1.000000
-U503                              in01f01        1.000000
-U404                              oa22f01        1.000000
-U455                              oa22f02        1.000000
+U702                              ao21s01        10.000000
+U351                              in01s01        10.000000
+U445                              na02f03        8.000000
+U573                              or02s01        8.000000
+U417                              oa21f03        8.000000
+U478                              oa21f01        8.000000
+U433                              in01f02        8.000000
+U345                              in01s01        6.000000
+U703                              ao21s01        5.000000
+i_tx_phy_sft_done_reg             ff00m06        5.000000
+U536                              or02s01        4.000000
+U477                              oa22f02        4.000000
+U701                              oa22s01        4.000000
+i_rx_phy_sd_r_reg                 ff00s02        4.000000
+i_rx_phy_rxd_s_reg                ff00f02        4.000000
+U699                              in01f01        4.000000
+U416                              ao21f01        4.000000
+i_tx_phy_sd_raw_o_reg             ff00m02        4.000000
+i_rx_phy_fs_ce_reg                ff00f06        3.000000
+i_tx_phy_sft_done_r_reg           ff00m02        3.000000
+U574                              in01m02        3.000000
+U343                              oa21s02        3.000000
+U634                              oa21s02        3.000000
+i_tx_phy_hold_reg_d_reg_7_        ff00s02        2.000000
+i_tx_phy_hold_reg_d_reg_6_        ff00m02        2.000000
+i_tx_phy_hold_reg_d_reg_2_        ff00s02        2.000000
+i_tx_phy_hold_reg_d_reg_0_        ff00s02        2.000000
+U432                              in01f08        2.000000
+U591                              na02s02        2.000000
+U434                              na02f02        2.000000
+U678                              oa21s01        2.000000
+U593                              or03s01        2.000000
+U594                              or03s01        2.000000
+U406                              oa22f01        2.000000
+U443                              oa22f02        2.000000
+U472                              na03f01        2.000000
+U482                              na02f03        1.000000
+U450                              na02f03        1.000000
+U650                              bf01m03        1.000000
+U659                              or02s01        1.000000
+U610                              in01m03        1.000000
+U611                              in01m08        1.000000
+U682                              oa21s01        1.000000
+U621                              in01f01        1.000000
+U713                              oa22s01        1.000000
+U464                              or03f01        1.000000
 
 1

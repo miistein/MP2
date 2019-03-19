@@ -1,10 +1,10 @@
 Information: Derived library resistance unit is 1.000000 Kohm (Time unit is 1 ns, and Capacitance unit is 1.000000 pF). (DES-028)
 
 ****************************************
-Report : read_parasitics /home/linux/ieng6/ee260b/jklaw/mp_2/example/usb_phy.spef
+Report : read_parasitics /home/linux/ieng6/ee260b/jklaw/mp_2/MP2/usb_phy.spef
 Design : usb_phy
 Version: K-2015.06-SP3-1
-Date   : Sun Mar 10 20:18:17 2019
+Date   : Thu Mar 14 00:40:02 2019
 ****************************************
 
         0 error(s)

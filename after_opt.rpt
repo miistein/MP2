@@ -1,4 +1,6 @@
+Information: Using automatic max wire load selection group 'WireAreaForZero'. (ENV-003)
+Information: Using automatic min wire load selection group 'WireAreaForZero'. (ENV-003)
 **** Timing Summary ****
-WNS (ns) : -0.060547
-TNS (ns) : -0.547254
-Numer of violated endpoints : 39
+WNS (ns) : -3.388866
+TNS (ns) : -16.790516
+Numer of violated endpoints : 16

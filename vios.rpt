@@ -5,7 +5,7 @@ Report : constraint
 	-max_delay
 Design : usb_phy
 Version: K-2015.06-SP3-1
-Date   : Sun Mar 10 20:18:17 2019
+Date   : Thu Mar 14 00:52:44 2019
 ****************************************
 
 
@@ -13,45 +13,22 @@ Date   : Sun Mar 10 20:18:17 2019
 
    Endpoint                                                  Slack
    -----------------------------------------------------------------
-   i_tx_phy_sd_bs_o_reg/D                                 -0.060547 (VIOLATED)
-   i_tx_phy_one_cnt_reg_0_/D                              -0.049081 (VIOLATED)
-   i_rx_phy_sd_nrzi_reg/D                                 -0.048176 (VIOLATED)
-   i_tx_phy_one_cnt_reg_1_/D                              -0.040024 (VIOLATED)
-   i_tx_phy_bit_cnt_reg_0_/D                              -0.034714 (VIOLATED)
-   RxError_o                                              -0.031486 (VIOLATED)
-   i_rx_phy_sync_err_reg/D                                -0.030289 (VIOLATED)
-   i_tx_phy_state_reg_1_/D                                -0.029941 (VIOLATED)
-   i_tx_phy_state_reg_2_/D                                -0.023782 (VIOLATED)
-   rst_cnt_reg_4_/D                                       -0.021810 (VIOLATED)
-   i_tx_phy_sd_raw_o_reg/D                                -0.018902 (VIOLATED)
-   i_tx_phy_append_eop_sync3_reg/D                        -0.017714 (VIOLATED)
-   i_rx_phy_shift_en_reg/D                                -0.016232 (VIOLATED)
-   i_rx_phy_rx_valid1_reg/D                               -0.014375 (VIOLATED)
-   rst_cnt_reg_2_/D                                       -0.012959 (VIOLATED)
-   i_rx_phy_hold_reg_reg_7_/D                             -0.012187 (VIOLATED)
-   i_tx_phy_state_reg_0_/D                                -0.011558 (VIOLATED)
-   i_tx_phy_sd_nrzi_o_reg/D                               -0.011398 (VIOLATED)
-   i_rx_phy_dpll_state_reg_0_/D                           -0.007530 (VIOLATED)
-   i_rx_phy_byte_err_reg/D                                -0.007208 (VIOLATED)
-   i_rx_phy_bit_cnt_reg_2_/D                              -0.007125 (VIOLATED)
-   i_tx_phy_bit_cnt_reg_1_/D                              -0.005222 (VIOLATED)
-   i_rx_phy_hold_reg_reg_5_/D                             -0.004730 (VIOLATED)
-   i_rx_phy_hold_reg_reg_2_/D                             -0.004681 (VIOLATED)
-   i_rx_phy_fs_state_reg_1_/D                             -0.003382 (VIOLATED)
-   i_rx_phy_one_cnt_reg_2_/D                              -0.002666 (VIOLATED)
-   rst_cnt_reg_3_/D                                       -0.002530 (VIOLATED)
-   i_tx_phy_txoe_r2_reg/D                                 -0.001880 (VIOLATED)
-   i_tx_phy_append_eop_sync1_reg/D                        -0.001848 (VIOLATED)
-   i_tx_phy_append_eop_sync4_reg/D                        -0.001831 (VIOLATED)
-   rst_cnt_reg_0_/D                                       -0.001792 (VIOLATED)
-   i_tx_phy_txoe_r1_reg/D                                 -0.001788 (VIOLATED)
-   i_rx_phy_hold_reg_reg_3_/D                             -0.001531 (VIOLATED)
-   i_tx_phy_one_cnt_reg_2_/D                              -0.001505 (VIOLATED)
-   i_rx_phy_hold_reg_reg_0_/D                             -0.001464 (VIOLATED)
-   i_tx_phy_txoe_reg/D                                    -0.001432 (VIOLATED)
-   i_rx_phy_bit_cnt_reg_0_/D                              -0.001109 (VIOLATED)
-   i_rx_phy_hold_reg_reg_6_/D                             -0.000735 (VIOLATED)
-   i_rx_phy_hold_reg_reg_1_/D                             -0.000090 (VIOLATED)
+   i_rx_phy_sd_nrzi_reg/D                                 -3.388866 (VIOLATED)
+   i_tx_phy_sd_raw_o_reg/D                                -1.748250 (VIOLATED)
+   i_rx_phy_fs_state_reg_2_/D                             -1.674626 (VIOLATED)
+   i_rx_phy_sync_err_reg/D                                -1.671483 (VIOLATED)
+   i_tx_phy_sd_nrzi_o_reg/D                               -1.613155 (VIOLATED)
+   i_rx_phy_shift_en_reg/D                                -1.607488 (VIOLATED)
+   usb_rst_reg/D                                          -1.442042 (VIOLATED)
+   i_tx_phy_sft_done_reg/D                                -1.405039 (VIOLATED)
+   i_tx_phy_append_eop_sync3_reg/D                        -1.395411 (VIOLATED)
+   i_tx_phy_one_cnt_reg_0_/D                              -0.272218 (VIOLATED)
+   i_tx_phy_one_cnt_reg_1_/D                              -0.229359 (VIOLATED)
+   i_tx_phy_state_reg_0_/D                                -0.113669 (VIOLATED)
+   i_tx_phy_bit_cnt_reg_0_/D                              -0.068375 (VIOLATED)
+   i_tx_phy_state_reg_1_/D                                -0.055724 (VIOLATED)
+   i_tx_phy_bit_cnt_reg_1_/D                              -0.055192 (VIOLATED)
+   i_tx_phy_state_reg_2_/D                                -0.049619 (VIOLATED)
 
 
 1

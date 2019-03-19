@@ -1,38 +1,35 @@
 ****************************************
-Report : bottleneck
-	-cost_type path_count
-	-from ...
-	-max_cells 20
-	-nworst_paths 100
+Report : constraint
+	-all_violators
+	-path slack_only
+	-max_delay
 Design : usb_phy
 Version: K-2015.06-SP3-1
-Date   : Sun Mar 10 20:18:22 2019
+Date   : Thu Mar 14 00:52:44 2019
 ****************************************
 
-Bottleneck Cost = Number of violating paths through cell
 
-                                                 Bottleneck
-Cell                              Reference      Cost
---------------------------------------------------------------------------------
-i_rx_phy_fs_ce_reg                ff00f06        27.000000
-U432                              in01f08        15.000000
-U482                              na02f03        10.000000
-U636                              in01f03        8.000000
-U457                              na02f03        8.000000
-U417                              oa21f03        8.000000
-U445                              na02f03        6.000000
-U650                              bf01m03        6.000000
-U573                              or02s01        6.000000
-U345                              in01s01        6.000000
-U610                              in01m03        5.000000
-U450                              na02f03        4.000000
-U412                              na02f03        4.000000
-U343                              oa21s02        4.000000
-i_tx_phy_sft_done_r_reg           ff00m02        3.000000
-U474                              na02f03        3.000000
-U574                              in01m02        3.000000
-U581                              na02s03        3.000000
-U611                              in01m08        3.000000
-U458                              na02f03        3.000000
+   max_delay/setup ('clk' group)
+
+   Endpoint                                                  Slack
+   -----------------------------------------------------------------
+   i_rx_phy_sd_nrzi_reg/D                                     -3.4  (VIOLATED)
+   i_tx_phy_sd_raw_o_reg/D                                    -1.7  (VIOLATED)
+   i_rx_phy_fs_state_reg_2_/D                                 -1.7  (VIOLATED)
+   i_rx_phy_sync_err_reg/D                                    -1.7  (VIOLATED)
+   i_tx_phy_sd_nrzi_o_reg/D                                   -1.6  (VIOLATED)
+   i_rx_phy_shift_en_reg/D                                    -1.6  (VIOLATED)
+   usb_rst_reg/D                                              -1.4  (VIOLATED)
+   i_tx_phy_append_eop_sync3_reg/D                            -1.4  (VIOLATED)
+   i_tx_phy_sft_done_reg/D                                    -1.4  (VIOLATED)
+   i_tx_phy_one_cnt_reg_0_/D                                  -0.3  (VIOLATED)
+   i_tx_phy_one_cnt_reg_1_/D                                  -0.2  (VIOLATED)
+   i_tx_phy_state_reg_0_/D                                    -0.1  (VIOLATED)
+   i_tx_phy_state_reg_1_/D                                    -0.1  (VIOLATED)
+   i_tx_phy_state_reg_2_/D                                    -0.1  (VIOLATED)
+   i_tx_phy_bit_cnt_reg_0_/D                                  -0.1  (VIOLATED)
+   i_tx_phy_bit_cnt_reg_1_/D                                  -0.1  (VIOLATED)
+   i_tx_phy_TxReady_o_reg/D                                    0.0  (VIOLATED: increase significant digits)
+
 
 1

@@ -1,6 +1,6 @@
 #@ # 
 #@ # Running pt_shell Version K-2015.06-SP3-1 for linux64 -- Dec 11, 2015
-#@ # Date:   Sun Mar 10 20:18:16 2019
+#@ # Date:   Thu Mar 14 00:40:01 2019
 #@ # Run by: jklaw@ieng6-ece-05.ucsd.edu
 #@ 
 
@@ -1341,15 +1341,26 @@ source -echo -verbose run_pt.tcl
 #@ 
 #@ PtReportTiming > before_opt.rpt
 #@ 
-#@ source curopt.tcl
-#@ # -- Starting source curopt.tcl
+#@ source curopt2.tcl
+#@ # -- Starting source curopt2.tcl
 
-#@ proc getAddedBuffers {} {
-#@     set addedBuffers [get_cells eco* -filter "ref_name =~ bf*"]
-#@     return $addedBuffers
-#@ }
+#@ # TODOS
+#@ # - Better ordering for the list. Update the rest of the list on every iteration.
+#@ # - sizing of the buffers. Which sequence is the best? 01,02,03,..80. Can I try using slow, then try medium, then fast?
+#@ # - sorting of the clock pins. I really want the least violations (which I have) as well as the greatest slack
+#@ 
+#@ # TONIGHT
+#@ #  Do tonight: fix bug and implement the following - (dont worry about what my ordering is for the list). Actually I may want better ordering for the list too. I want to update the list on every iteration. Because the number of violations can increase as I add buffers to clock pins... I really have no idea how to do this though. 
+#@ #
+#@ # maybe use getattr buffer size for this information
+#@ #  01 -> 02 ... 40 -> on next iteration have a counter I attatch to function call . What do I want? Probably just 40 -> 40 -> 40, or whatever goes along with increasing. 
 #@ 
 #@ # Remove cells on clock tree
+#@ #
+#@ 
+#@ # setting for report timing
+#@ set timing_save_pin_arrival_and_slack true
+#@ 
 #@ proc removeBuffers {} {
 #@     puts "removing buffers"
 #@     # ref_name wildcard gets all buffers. Initially there is a buffer on every clock pin.
@@ -1369,59 +1380,56 @@ source -echo -verbose run_pt.tcl
 #@     if {[expr {$x!=28}]} {error "other clock pins should be 28"}
 #@ }
 #@ 
-#@ proc reportBottleneckCell {clock_pins} {
-#@     report_bottleneck -from $clock_pins -nosplit > temp.rpt
-#@     set inFile [open temp.rpt]
-#@     set info "skip"
-#@     while {[gets $inFile line]>=0} {
-#@         if {[regexp {ff} $line]} {
-#@             set info $line
-#@             break
-#@         }
-#@     }
-#@     close $inFile
 #@ 
-#@     if {$info == "skip"} {
-#@         return $info
-#@     }
+#@ set prev [list]
 #@ 
-#@     # Only return the clock pin for now but can get # violations with index 2
-#@     set regCellName [lindex $info 0]
-#@     return "$regCellName/CP"
+#@ proc col2list { col } {
+#@    set list ""
+#@    foreach_in_collection c $col { lappend list [get_object_name $c] }
+#@    return $list
 #@ }
 #@ 
-#@ proc reportBottleneckCells {clock_pins} {
-#@     report_bottleneck -from $clock_pins -nosplit > temp2.rpt
-#@     set inFile [open temp2.rpt]
-#@     set info [list]
+#@ proc sortByBottleneck {clock_pins} {
+#@     # removing from collection seems to help a lot. adding on the violations at the end? Haven't tried whether this helps.
+#@     report_bottleneck -from $clock_pins -max_cells 17261 -max_paths 10000 -nworst_paths 100 -nosplit > temp.rpt
+#@     set inFile [open temp.rpt r]
+#@     set info "skip"
+#@     set cps [list]
 #@     while {[gets $inFile line]>=0} {
 #@         if {[regexp {ff} $line]} {
-#@             # Only return the clock pin for now but can get # violations with index 2
 #@             set regCellName [lindex $line 0]
-#@             set numViolationsImpacted [lindex $line 2]
-#@             lappend info [list "$regCellName/CP" $numViolationsImpacted]
-#@         }   
+#@             set numViolationsOnPath [lindex $line 2]
+#@             set temp "$regCellName/CP"
+#@             lappend cps $temp
+#@         }
 #@     }
-#@     close $inFile
+#@     set reversecps [lreverse $cps]
+#@     # remove duplicate elements from list
+#@     set sortedcps [lsort -unique $reversecps]
 #@ 
-#@     if {[llength $info] == 0} {
-#@         return "skip"
-#@     } else {
-#@         return $info
-#@     }
+#@     # Only return the clock pin for now but can get # violations with index 2
+#@     set remove_sorted [remove_from_collection $clock_pins $sortedcps]
+#@     set firsthalf [col2list $remove_sorted]
+#@     
+#@     #set lensorted [llength remove_sorted]
+#@     #if {[sizeof_collection $clock_pins] == $lensorted} {
+#@     #    return $firsthalf
+#@     #}
+#@     close $inFile
+#@     return [list {*}$firsthalf {*}$sortedcps]
 #@ }
 #@ 
 #@ proc totalViolations {} {
-#@     report_constraint -max_delay -all_violators -nosplit > temp3.rpt
+#@     report_constraint -significant_digits 1 -max_delay -all_violators -nosplit > temp2.rpt
 #@     set vio_num 0
-#@     set inFile [open temp3.rpt]
+#@     set inFile [open temp2.rpt r]
 #@     while {[gets $inFile line]>=0} {
 #@         if {[regexp {VIOLATED} $line]} {
 #@             incr vio_num
 #@         }
 #@     }
-#@     close $inFile
-#@     
+#@ 
+#@     close $inFile    
 #@     return $vio_num
 #@ }
 #@ 
@@ -1436,62 +1444,68 @@ source -echo -verbose run_pt.tcl
 #@     return 0
 #@ }
 #@ 
-#@ proc getBufferCell {cp} {
-#@     set BufferCell [get_object_name [index_collection [filter_collection [all_fanin -to $cp -only_cells] "is_sequential == false"] end]]
-#@     return $BufferCell
+#@ #proc getBufferCell {cp} {
+#@ #    set BufferCell [get_object_name [index_collection [filter_collection [all_fanin -to $cp -only_cells] "is_sequential == false"] end]]
+#@ #    return $BufferCell
+#@ #}
+#@ 
+#@ global global_numinsertions
+#@ set global_numinsertions -1
+#@ proc insertCell {clockpin vtchoice sizechoice} {
+#@     PtInsertCell $clockpin "bf01${vtchoice}${sizechoice}"
+#@     global global_numinsertions
+#@     set global_numinsertions [expr $global_numinsertions+1]
 #@ }
 #@ 
-#@ proc naiveBuffersAtClockPins {clock_pins initialViolations} {
-#@     puts "adding buffers to clock pins"
-#@     set temp [reportBottleneckCell $clock_pins]
-#@     puts "top bottlneck cell - $temp"
-#@     set temp [reportBottleneckCells $clock_pins]
-#@     puts "NOT USING but reports all bottleneck cell ties and corresponding # violations in the same path- $temp"
+#@ proc removeLastBuffer {clockpin} {
+#@     global global_numinsertions
+#@     #set lastBuffer [get_object_name [index_collection [get_cells eco_$global_numinsertions -filter "ref_name =~ bf*"] 0]]
+#@     set lastBuffer "eco_cell_$global_numinsertions"
+#@     PtRemoveCell $lastBuffer
+#@ }
 #@ 
+#@ proc naiveBuffersAtClockPins {clock_pins initialViolations all_clock_pins} {
 #@     set vt "s m f"
-#@     # I don't try anything >= 80
-#@     set sizes "01 02 03 04 06 08 10 20 40"
+#@     set sizes "01 02 03 04 06 08 10 20 40 80"
 #@ 
-#@     set j 0
-#@     set cp [reportBottleneckCell $clock_pins]
-#@     for {set i 0} {$i < 1000} {incr i} {
-#@         set vtchoice [lindex $vt 2]
-#@         puts "vt $vtchoice"
-#@         set sizechoice [lindex $sizes $j]
-#@         puts "size $sizechoice"
+#@     puts "starting a new buffer run ... "
+#@     puts "LENGTH OF INPUT LIST IS [sizeof_collection $clock_pins]"
+#@     puts "LENGTH OF LIST IS [llength [sortByBottleneck $clock_pins]] (should be 55,15,28)"
+#@     
+#@     set iterations [llength [sortByBottleneck $clock_pins]]
+#@     set clockpins [sortByBottleneck $clock_pins]
+#@     set en 1
+#@     set i -1
+#@     while {$en} {
+#@         incr i
+#@         set clockpin [lindex $clockpins 0]
+#@         set clockpins [lreplace [sortByBottleneck $clock_pins] 0 $i]
+#@         if {[llength $clockpins]==0} {set en 0}
+#@         for {set j 0} {$j <= 9} {incr j} {
+#@             set vtchoice [lindex $vt 2]
+#@             set sizechoice [lindex $sizes $j]
 #@ 
-#@         # try choice. starting from small drive strength to large drive strength.
-#@         PtInsertCell $cp "bf01${vtchoice}${sizechoice}"
-#@         set total [totalViolations]
-#@         puts $total
-#@         puts $initialViolations
-#@         if {$total >= $initialViolations} {
-#@             # revert
-#@             PtRemoveCell [getBufferCell $cp]
-#@             # get new clock pin
-#@             set clock_pins [remove_from_collection $clock_pins $cp]
-#@             set cp [reportBottleneckCell $clock_pins]
-#@             if {$cp=="skip"} {break}
-#@             continue
-#@         } else {
-#@             set initialViolations $total
-#@         } 
-#@ 
-#@         if {$j >= ([llength $sizes]-2)} {
-#@             set j 0
-#@             set clock_pins [remove_from_collection $clock_pins $cp]
-#@             set cp [reportBottleneckCell $clock_pins]
-#@             if {$cp=="skip"} {break}
-#@             continue
-#@         } else {
-#@             incr j 2
+#@             insertCell $clockpin $vtchoice $sizechoice
+#@             set total [totalViolations]
+#@             puts $total
+#@             puts $initialViolations
+#@             if {$total > $initialViolations} {
+#@                 # recover from insertion
+#@                 removeLastBuffer $clockpin
+#@                 break
+#@             } else {
+#@                 set initialViolations $total
+#@             }
+#@         
+#@             incr j
 #@         }
+#@         # IDEA: 
+#@         # clockpin got through without breaking. Appending it to a new list of clockpins so we can do this all over again.
+#@         # lappend
 #@     }
 #@ 
 #@     return $initialViolations
 #@ }
-#@ 
-#@ #set timing_save_pin_arrival_and_slack true
 #@ 
 #@ removeBuffers
 #@ 
@@ -1528,28 +1542,18 @@ source -echo -verbose run_pt.tcl
 #@ # start from input pins, then output pins, then other pins. 
 #@ 
 #@ # just run through every clock pin that contributes to violations. Never traces backwards.
-#@ 
 #@ set v [totalViolations]
-#@ set v [naiveBuffersAtClockPins $input_clock_pins $v]
-#@ set v [naiveBuffersAtClockPins $output_clock_pins $v]
-#@ set v [naiveBuffersAtClockPins $other_clock_pins $v]
-#@ # -- End source curopt.tcl
+#@ for {set j 0} {$j <= 9} {incr j} {
+#@     set v [naiveBuffersAtClockPins $input_clock_pins $v $input_clock_pins]
+#@     set v [naiveBuffersAtClockPins $output_clock_pins $v $output_clock_pins]
+#@     set v [naiveBuffersAtClockPins $other_clock_pins $v $other_clock_pins]
+#@ }
+#@ # -- End source curopt2.tcl
 
+#@ 
+#@ PtReportTiming > after_opt.rpt
+#@ 
+#@ write_changes -format ptsh -out cell.sizes  
+#@ 
 #@ # -- End source run_pt.tcl
 
-reportBottleneckCell $output_clock_pins
-report_bottleneck -from $output_clock_pins
-remove_from_collection $output_clock_pins i_rx_phy_rxdn_s1_reg/CP
-remove_from_collection $output_clock_pins cellname=i_rx_phy_rxdn_s1_reg/CP
-remove_from_collection $output_clock_pins [list i_rx_phy_rxdn_s1_reg/CP]
-set temp [remove_from_collection $output_clock_pins i_rx_phy_rxdn_s1_reg/CP]
-report_bottleneck -from $output_clock_pins
-query $output_clock_pins
-queryobjects $output_clock_pins
-report_bottleneck $output_clock_pins
-report_bottleneck
-report_bottleneck -to $output_clock_pins
-report_bottleneck -to $input_clock_pins
-report_bottleneck -from $output_clock_pins
-report_bottleneck -from $output_clock_pins
-exit

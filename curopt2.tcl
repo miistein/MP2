@@ -6,9 +6,15 @@
 # TONIGHT
 #  Do tonight: fix bug and implement the following - (dont worry about what my ordering is for the list). Actually I may want better ordering for the list too. I want to update the list on every iteration. Because the number of violations can increase as I add buffers to clock pins... I really have no idea how to do this though. 
 #
+# maybe use getattr buffer size for this information
 #  01 -> 02 ... 40 -> on next iteration have a counter I attatch to function call . What do I want? Probably just 40 -> 40 -> 40, or whatever goes along with increasing. 
 
 # Remove cells on clock tree
+#
+
+# setting for report timing
+set timing_save_pin_arrival_and_slack true
+
 proc removeBuffers {} {
     puts "removing buffers"
     # ref_name wildcard gets all buffers. Initially there is a buffer on every clock pin.
@@ -119,12 +125,20 @@ proc naiveBuffersAtClockPins {clock_pins initialViolations all_clock_pins} {
     puts "starting a new buffer run ... "
     puts "LENGTH OF INPUT LIST IS [sizeof_collection $clock_pins]"
     puts "LENGTH OF LIST IS [llength [sortByBottleneck $clock_pins]] (should be 55,15,28)"
-    foreach clockpin [sortByBottleneck $clock_pins] {
-        for {set j 0} {$j <= 9} {incr i} {
+    
+    set iterations [llength [sortByBottleneck $clock_pins]]
+    set clockpins [sortByBottleneck $clock_pins]
+    set en 1
+    set i -1
+    while {$en} {
+        incr i
+        set clockpin [lindex $clockpins 0]
+        set clockpins [lreplace [sortByBottleneck $clock_pins] 0 $i]
+        if {[llength $clockpins]==0} {set en 0}
+        for {set j 0} {$j <= 9} {incr j} {
             set vtchoice [lindex $vt 2]
             set sizechoice [lindex $sizes $j]
 
-            # try insertion 
             insertCell $clockpin $vtchoice $sizechoice
             set total [totalViolations]
             puts $total
@@ -137,16 +151,15 @@ proc naiveBuffersAtClockPins {clock_pins initialViolations all_clock_pins} {
                 set initialViolations $total
             }
         
-            incr j 2
+            incr j
         }
+        # IDEA: 
         # clockpin got through without breaking. Appending it to a new list of clockpins so we can do this all over again.
         # lappend
     }
 
     return $initialViolations
 }
-
-set timing_save_pin_arrival_and_slack true
 
 removeBuffers
 
@@ -184,14 +197,8 @@ testCollectionsUSBPHYS $input_clock_pins $output_clock_pins $other_clock_pins
 
 # just run through every clock pin that contributes to violations. Never traces backwards.
 set v [totalViolations]
-set v [naiveBuffersAtClockPins $input_clock_pins $v $input_clock_pins]
-set v [naiveBuffersAtClockPins $output_clock_pins $v $output_clock_pins]
-set v [naiveBuffersAtClockPins $other_clock_pins $v $other_clock_pins]
-
-set v [naiveBuffersAtClockPins $input_clock_pins $v $input_clock_pins]
-set v [naiveBuffersAtClockPins $output_clock_pins $v $output_clock_pins]
-set v [naiveBuffersAtClockPins $other_clock_pins $v $other_clock_pins]
-
-set v [naiveBuffersAtClockPins $input_clock_pins $v $input_clock_pins]
-set v [naiveBuffersAtClockPins $output_clock_pins $v $output_clock_pins]
-set v [naiveBuffersAtClockPins $other_clock_pins $v $other_clock_pins]
+for {set j 0} {$j <= 9} {incr j} {
+    set v [naiveBuffersAtClockPins $input_clock_pins $v $input_clock_pins]
+    set v [naiveBuffersAtClockPins $output_clock_pins $v $output_clock_pins]
+    set v [naiveBuffersAtClockPins $other_clock_pins $v $other_clock_pins]
+}

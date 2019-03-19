@@ -28,10 +28,9 @@ check_timing
 
 PtReportTiming > before_opt.rpt
 
-source curopt.tcl
+source curopt2.tcl
 
 PtReportTiming > after_opt.rpt
 
 write_changes -format ptsh -out cell.sizes  
 
-exit
